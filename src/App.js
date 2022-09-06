@@ -9,13 +9,6 @@ import mp3 from "./Audio/a.mp3";
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
 export default function App() {
-  let props = useControls({
-    focus: { value: 6.1 },
-    speed: { value: 23},
-    aperture: { value: 5.6 },
-    fov: { value: 200 },
-    curl: { value: 0.25, min: 0.01, max: 0.5, step: 0.01 }
-  })
 
 
 //   async function createAudio(url) {
@@ -57,13 +50,14 @@ export default function App() {
 
   
 
-  // render(<Particles {...props}/>, document.querySelector('canvas'))
+  render(<Particles />, document.querySelector('canvas'))
   return (
     <>
+    <Canvas camera={{ fov: 75, position: [0, 0, 6]}}>
       <OrbitControls makeDefault autoRotate autoRotateSpeed={0.5} zoomSpeed={0.1} />
       <CameraShake yawFrequency={1} maxYaw={0.05} pitchFrequency={1} maxPitch={0.05} rollFrequency={0.5} maxRoll={0.5} intensity={0.2} />
-      <Particles {...props} />
-     
+      {/* <Particles  /> */}
+      </Canvas>
     
     
     </>

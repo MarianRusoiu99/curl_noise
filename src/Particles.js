@@ -5,14 +5,27 @@ import { useFBO } from '@react-three/drei'
 import './shaders/simulationMaterial'
 import './shaders/dofPointsMaterial'
 import mp3 from "./Audio/a.mp3";
+import gsap from "gsap"
 import { suspend } from 'suspend-react'
-export function Particles({ speed, fov, aperture, focus, curl, size = 512, ...props }) {
+import CameraControler from "./CameraController"
+// import { Camera } from 'three'
+export function Particles() {
+
+const size = 512
+const focus = 6.1
+const speed = 30
+    const aperture = 5.6 
+  const fov = 25 
+   
+
+
 
   const simRef = useRef()
   const renderRef = useRef()
   // Set up FBO
   const [scene] = useState(() => new THREE.Scene())
-  let [camera] = useState(() => new THREE.OrthographicCamera(-1, 1, 1, -1, 1 / Math.pow(2, 53), 1))
+  let [camera] = useState(() => new THREE.OrthographicCamera(-1, 0, 1, -1, 1 / Math.pow(2, 53), 1))
+  // camera.position.set([0,0,1])
   const [positions] = useState(() => new Float32Array([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0]))
   const [uvs] = useState(() => new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]))
   const target = useFBO(size, size, {
@@ -41,19 +54,17 @@ export function Particles({ speed, fov, aperture, focus, curl, size = 512, ...pr
     var audio = document.getElementById("audio");
    audio.src = url
    audio.load();
-    console.log(audio)
+   
     //  var src = context.createMediaElementSource(audio);
     var buffer = await res.arrayBuffer()
     var context = new AudioContext();
-    var source = context.createBufferSource()
+    // var src = context.createMediaElementSource(audio);
+    var source = context.createBufferSource(audio)
     source.buffer = await new Promise((res) => context.decodeAudioData(buffer, res))
-    source.loop = true
+    // source.loop = true
 
     source.start(0)
-    // res.play()
-    // context.resume()
-    // Create gain node and an analyser
-    // const gain = context.createGain()
+
     var analyser = context.createAnalyser()
     analyser.fftSize = 64
     source.connect(analyser)
@@ -64,7 +75,7 @@ export function Particles({ speed, fov, aperture, focus, curl, size = 512, ...pr
     return {
       context,
       source,
-      // gain,
+    
       data,
       // This function gets called every frame per audio source
       update: () => {
@@ -75,19 +86,19 @@ export function Particles({ speed, fov, aperture, focus, curl, size = 512, ...pr
       },
     }
   }
-const norm = function(val, max, min) { return (val - min) / (max - min); }
-const { gain, context, update, data } = suspend(() => createAudio(mp3), [mp3])
+// const norm = function(val, max, min) { return (val - min) / (max - min); }
+const { context, update, data } = suspend(() => createAudio(mp3), [mp3])
 // useEffect(()=>{
   window.addEventListener("click" , () => {
     // createAudio(mp3).then((audio)=>{console.log(audio) })
    
     context.resume()
     // context.play()
-    curl = norm(update(),0.9,0.1)
+    // curl = norm(update(),0.9,0.1)
     // console.log(curl)
-    console.log(context)
+    // console.log(context)
     audio.play()
-  
+    
   // })
 
 
@@ -96,26 +107,29 @@ const { gain, context, update, data } = suspend(() => createAudio(mp3), [mp3])
 
   
   useFrame((state) => {
-    console.log(update()/250)
+    console.log(update()/50+3)
+    // console.log(update()/260)
+// console.log(gsap.utils.normalize(0, 1, update())/100+4 )
     state.gl.setRenderTarget(target)
     state.gl.clear()
+    camera.rotateX +=100 ;
     state.gl.render(scene, camera)
     state.gl.setRenderTarget(null)
     renderRef.current.uniforms.positions.value = target.texture
     renderRef.current.uniforms.uTime.value = state.clock.elapsedTime
-    renderRef.current.uniforms.uFocus.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFocus.value, focus, 0.1)
-    renderRef.current.uniforms.uFov.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFov.value, fov, 0.1)
+    renderRef.current.uniforms.uFocus.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFocus.value, update()/30+2, 0.5)
+    renderRef.current.uniforms.uFov.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFov.value, update(), 0.1)
     renderRef.current.uniforms.uBlur.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uBlur.value, (5.6 - aperture) * 9, 0.1)
     simRef.current.uniforms.uTime.value = state.clock.elapsedTime * speed
-    simRef.current.uniforms.uCurlFreq.value = THREE.MathUtils.lerp(simRef.current.uniforms.uCurlFreq.value, update()/250, 0.1)
+    simRef.current.uniforms.uCurlFreq.value = THREE.MathUtils.lerp(simRef.current.uniforms.uCurlFreq.value, update()/260+0.01, 0.1)
   })
   
   return (
     <>
-    
+   
  
-    
-      {/* Simulation goes into a FBO/Off-buffer */}
+      {/* <CameraControler/>   */}
+          {/* Simulation goes into a FBO/Off-buffer */}
       {createPortal(
         <mesh >
           <simulationMaterial ref={simRef} />
@@ -127,7 +141,8 @@ const { gain, context, update, data } = suspend(() => createAudio(mp3), [mp3])
         scene
       )}
       {/* The result of which is forwarded into a pointcloud via data-texture */}
-      <points {...props}>
+      <points rotateOnAxis={Math.PI/2} scale={2} {...{focus,speed,aperture,fov}}>
+      <ambientLight color={'#03b1fc'}/>
         <dofPointsMaterial ref={renderRef} />
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" count={particles.length / 3} array={particles} itemSize={3} />
