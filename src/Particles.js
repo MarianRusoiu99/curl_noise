@@ -117,7 +117,7 @@ const { context, update, data } = suspend(() => createAudio(mp3), [mp3])
     state.gl.setRenderTarget(null)
     renderRef.current.uniforms.positions.value = target.texture
     renderRef.current.uniforms.uTime.value = state.clock.elapsedTime
-    renderRef.current.uniforms.uFocus.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFocus.value, update()/30+2, 0.5)
+    renderRef.current.uniforms.uFocus.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFocus.value, update()/30+1, 0.5)
     renderRef.current.uniforms.uFov.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFov.value, update(), 0.1)
     renderRef.current.uniforms.uBlur.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uBlur.value, (5.6 - aperture) * 9, 0.1)
     simRef.current.uniforms.uTime.value = state.clock.elapsedTime * speed
