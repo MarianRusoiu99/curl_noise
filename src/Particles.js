@@ -50,32 +50,33 @@ const speed = 30
   
    async function createAudio(url) {
     // Fetch audio data and create a buffer source
-    var res = await fetch(url)
-    var audio = document.getElementById("audio");
+        var audio = document.getElementById("audio");
    audio.src = url
    audio.load();
-   
+   var res = await fetch(url)
+  
     //  var src = context.createMediaElementSource(audio);
     var buffer = await res.arrayBuffer()
-    var context = new AudioContext();
+    var context = new AudioContext(audio);
+   
     // var src = context.createMediaElementSource(audio);
-    var source = context.createBufferSource(audio)
+    var source = context.createMediaElementSource(audio)
     source.buffer = await new Promise((res) => context.decodeAudioData(buffer, res))
-    // source.loop = true
-
-    source.start(0)
-
+    source.connect(context.destination);
+    audio.pause();
+    
+    console.log(source)
+    // source.resume()
     var analyser = context.createAnalyser()
     analyser.fftSize = 64
     source.connect(analyser)
-    // analyser.connect(gain)
-    
+
+   
     // The data array receive the audio frequencies
     var data = new Uint8Array(analyser.frequencyBinCount)
     return {
       context,
       source,
-    
       data,
       // This function gets called every frame per audio source
       update: () => {
@@ -87,27 +88,33 @@ const speed = 30
     }
   }
 // const norm = function(val, max, min) { return (val - min) / (max - min); }
+// const { context, update, data } = suspend(() => createAudio(mp3), [mp3])
 const { context, update, data } = suspend(() => createAudio(mp3), [mp3])
+
+window.addEventListener("click" , () => {
+  context.resume();
+ console.log(audio)
+})
 // useEffect(()=>{
-  window.addEventListener("click" , () => {
-    // createAudio(mp3).then((audio)=>{console.log(audio) })
+//   window.addEventListener("click" , () => {
+//     // createAudio(mp3).then((audio)=>{console.log(audio) })
    
-    context.resume()
-    // context.play()
-    // curl = norm(update(),0.9,0.1)
-    // console.log(curl)
-    // console.log(context)
-    audio.play()
+//     context.resume()
+//     // context.play()
+//     // curl = norm(update(),0.9,0.1)
+//     // console.log(curl)
+//     // console.log(context)
+//     audio.play()
     
-  // })
+//   // })
 
 
 
-},[])
+// })
 
   
   useFrame((state) => {
-    console.log(update()/50+3)
+    console.log(update())
     // console.log(update()/260)
 // console.log(gsap.utils.normalize(0, 1, update())/100+4 )
     state.gl.setRenderTarget(target)
@@ -117,7 +124,7 @@ const { context, update, data } = suspend(() => createAudio(mp3), [mp3])
     state.gl.setRenderTarget(null)
     renderRef.current.uniforms.positions.value = target.texture
     renderRef.current.uniforms.uTime.value = state.clock.elapsedTime
-    renderRef.current.uniforms.uFocus.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFocus.value, update()/30+2, 0.5)
+    renderRef.current.uniforms.uFocus.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFocus.value, update()/100+2, 0.5)
     renderRef.current.uniforms.uFov.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFov.value, update(), 0.1)
     renderRef.current.uniforms.uBlur.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uBlur.value, (5.6 - aperture) * 9, 0.1)
     simRef.current.uniforms.uTime.value = state.clock.elapsedTime * speed
