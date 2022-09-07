@@ -1,11 +1,9 @@
-import * as THREE from 'three'
-import { render, events, extend } from '@react-three/fiber'
-import { createRoot } from 'react-dom/client';
+
 import './styles.css'
 import App from './App'
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import mp3 from "./Audio/a.mp3";
+
 
 // extend(THREE)
 

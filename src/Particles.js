@@ -1,13 +1,13 @@
 import * as THREE from 'three'
-import { useMemo, useState, useRef,Suspense,useEffect } from 'react'
-import { createPortal, useFrame, Canvas, Camera , useThree} from '@react-three/fiber'
+import { useMemo, useState, useRef } from 'react'
+import { createPortal, useFrame} from '@react-three/fiber'
 import { useFBO } from '@react-three/drei'
 import './shaders/simulationMaterial'
 import './shaders/dofPointsMaterial'
 import mp3 from "./Audio/a.mp3";
-import gsap from "gsap"
+
 import { suspend } from 'suspend-react'
-import CameraControler from "./CameraController"
+
 // import { Camera } from 'three'
 export function Particles() {
 
@@ -55,6 +55,7 @@ const speed = 30
    audio.load();
    var res = await fetch(url)
   
+  
     //  var src = context.createMediaElementSource(audio);
     var buffer = await res.arrayBuffer()
     var context = new AudioContext(audio);
@@ -70,7 +71,7 @@ const speed = 30
     var analyser = context.createAnalyser()
     analyser.fftSize = 64
     source.connect(analyser)
-
+    // context.resume();
    
     // The data array receive the audio frequencies
     var data = new Uint8Array(analyser.frequencyBinCount)
@@ -91,7 +92,7 @@ const speed = 30
 // const { context, update, data } = suspend(() => createAudio(mp3), [mp3])
 const { context, update, data } = suspend(() => createAudio(mp3), [mp3])
 
-window.addEventListener("click" , () => {
+document.addEventListener("click" , () => {
   context.resume();
  console.log(audio)
 })
@@ -128,7 +129,7 @@ window.addEventListener("click" , () => {
     renderRef.current.uniforms.uFov.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uFov.value, update(), 0.1)
     renderRef.current.uniforms.uBlur.value = THREE.MathUtils.lerp(renderRef.current.uniforms.uBlur.value, (5.6 - aperture) * 9, 0.1)
     simRef.current.uniforms.uTime.value = state.clock.elapsedTime * speed
-    simRef.current.uniforms.uCurlFreq.value = THREE.MathUtils.lerp(simRef.current.uniforms.uCurlFreq.value, update()/260+0.01, 0.1)
+    simRef.current.uniforms.uCurlFreq.value = THREE.MathUtils.lerp(simRef.current.uniforms.uCurlFreq.value, update()/300+0.01, 0.1)
   })
   
   return (
