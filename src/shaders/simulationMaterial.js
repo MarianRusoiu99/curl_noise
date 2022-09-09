@@ -37,7 +37,7 @@ class SimulationMaterial extends THREE.ShaderMaterial {
         vec3 curlPos = texture2D(positions, vUv).rgb;
         pos = curl(pos * uCurlFreq + t);
         curlPos = curl(curlPos * uCurlFreq + t);
-        curlPos += curl(curlPos * uCurlFreq * 2.0) * 0.5;
+        curlPos += curl(curlPos * uCurlFreq * 2.0) * 0.6;
         curlPos += curl(curlPos * uCurlFreq * 4.0) * 0.25;
         curlPos += curl(curlPos * uCurlFreq * 8.0) * 0.125;
         curlPos += curl(pos * uCurlFreq * 16.0) * 0.0625;
@@ -47,6 +47,7 @@ class SimulationMaterial extends THREE.ShaderMaterial {
         positions: { value: positionsTexture },
         uTime: { value: 0 },
         uCurlFreq: { value: 0.25 }
+     
       }
     })
   }

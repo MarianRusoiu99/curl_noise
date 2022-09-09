@@ -1,27 +1,27 @@
-import React from "react"
-import { OrbitControls, CameraShake } from '@react-three/drei'
+import React,{useState} from "react"
+
 
 import  {Particles}  from './Particles'
 import {  Canvas, render} from '@react-three/fiber'
-
-// import { AudioContext } from 'standardized-audio-context';
 
 
 
 export default function App() {
 
 
-
+ 
   render(<Particles />, document.querySelector('canvas'))
   return (
-    <>
-    <Canvas camera={{ fov: 75, position: [0, 0, 6]}}>
-      <OrbitControls makeDefault autoRotate autoRotateSpeed={0.5} zoomSpeed={0.1} />
-      <CameraShake yawFrequency={1} maxYaw={0.05} pitchFrequency={1} maxPitch={0.05} rollFrequency={0.5} maxRoll={0.5} intensity={0.2} />
-      {/* <Particles  /> */}
+    <div className="App">
+      
+   
+    <Canvas>
+      {/* <OrbitControls makeDefault autoRotate autoRotateSpeed={0.5} zoomSpeed={0.1} />
+      <CameraShake yawFrequency={1} maxYaw={0.05} pitchFrequency={1} maxPitch={0.05} rollFrequency={0.5} maxRoll={0.5} intensity={0.2} /> */}
+    
       </Canvas>
     
     
-    </>
+    </div>
   )
 }
