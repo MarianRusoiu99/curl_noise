@@ -32,8 +32,10 @@ const speed = 30
     minFilter: THREE.NearestFilter,
     magFilter: THREE.NearestFilter,
     format: THREE.RGBAFormat,
-    type: THREE.FloatType
+    type: THREE.FloatType,
+   
   })
+  
   // Normalize points
   const particles = useMemo(() => {
     const length = size * size
@@ -95,28 +97,11 @@ window.addEventListener("click" , () => {
   context.resume();
  console.log(audio)
 })
-// useEffect(()=>{
-//   window.addEventListener("click" , () => {
-//     // createAudio(mp3).then((audio)=>{console.log(audio) })
-   
-//     context.resume()
-//     // context.play()
-//     // curl = norm(update(),0.9,0.1)
-//     // console.log(curl)
-//     // console.log(context)
-//     audio.play()
-    
-//   // })
-
-
-
-// })
 
   
   useFrame((state) => {
     console.log(update())
-    // console.log(update()/260)
-// console.log(gsap.utils.normalize(0, 1, update())/100+4 )
+
     state.gl.setRenderTarget(target)
     state.gl.clear()
     camera.rotateX +=100 ;
@@ -138,8 +123,8 @@ window.addEventListener("click" , () => {
       {/* <CameraControler/>   */}
           {/* Simulation goes into a FBO/Off-buffer */}
       {createPortal(
-        <mesh >
-          <simulationMaterial ref={simRef} />
+        <mesh  >
+          <simulationMaterial  ref={simRef} />
           <bufferGeometry>
             <bufferAttribute attach="attributes-position" count={positions.length / 3} array={positions} itemSize={3} />
             <bufferAttribute attach="attributes-uv" count={uvs.length / 2} array={uvs} itemSize={2} />
@@ -149,7 +134,7 @@ window.addEventListener("click" , () => {
       )}
       {/* The result of which is forwarded into a pointcloud via data-texture */}
       <points rotateOnAxis={Math.PI/2} scale={2} {...{focus,speed,aperture,fov}}>
-      <ambientLight color={'#03b1fc'}/>
+      <ambientLight/>
         <dofPointsMaterial ref={renderRef} />
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" count={particles.length / 3} array={particles} itemSize={3} />

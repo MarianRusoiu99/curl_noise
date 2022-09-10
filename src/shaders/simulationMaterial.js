@@ -46,7 +46,7 @@ class SimulationMaterial extends THREE.ShaderMaterial {
       uniforms: {
         positions: { value: positionsTexture },
         uTime: { value: 0 },
-        uCurlFreq: { value: 0.25 }
+        uCurlFreq: { value: 0.15 }
       }
     })
   }

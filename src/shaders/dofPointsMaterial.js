@@ -29,11 +29,13 @@ class DofPointsMaterial extends THREE.ShaderMaterial {
         uTime: { value: 0 },
         uFocus: { value: 5.1 },
         uFov: { value: 50 },
-        uBlur: { value: 30 }
+        uBlur: { value: 30 },
+        myColor: { value: "#eb4034" }  
       },
       transparent: true,
       blending: THREE.NormalBlending,
-      depthWrite: false
+      depthWrite: false,
+      
     })
   }
 }
