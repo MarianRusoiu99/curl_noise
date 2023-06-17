@@ -96,8 +96,10 @@ export function Particles() {
 
   const { context, update } = suspend(() => createAudio(mp3), [mp3]);
 
-  document.addEventListener("click", () => {
+  document.getElementById("btn").addEventListener("click", () => {
     context.resume();
+    document.getElementById("audio").play();
+    document.getElementById("btn").style.display = "none";
     console.log(audio);
   });
 
