@@ -8,7 +8,7 @@ import mp3 from "./Audio/a.mp3";
 
 import { suspend } from "suspend-react";
 
-var randomColor = require('randomcolor');
+
 export function Particles() {
   const size = 512;
   const focus = 6.1;
@@ -93,10 +93,7 @@ export function Particles() {
       },
     };
   }
- console.log(randomColor({
-  luminosity: 'bright',
-  format: 'rgb' // e.g. 'rgb(225,200,20)'
-}))
+
   const { context, update } = suspend(() => createAudio(mp3), [mp3]);
 
   document.addEventListener("click", () => {
